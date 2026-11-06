@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Knowledge Base Hub</title>
+  <style>
+    :root {
+      --wp-admin-bar: #1d2327;
+      --wp-sidebar-bg: #1d2327;
+      --wp-sidebar-text: #c3c4c7;
+      --wp-sidebar-hover: #2c3338;
+      --wp-sidebar-current: #2271b1;
+      --wp-sidebar-current-text: #fff;
+      --wp-bg: #f0f0f1;
+      --wp-text-main: #3c434a;
+      --wp-text-light: #50575e;
+      --wp-link: #2271b1;
+      --wp-link-hover: #135e96;
+      --wp-border: #c3c4c7;
+      --wp-border-input: #8c8f94;
+      --wp-card-bg: #ffffff;
+      
+      --wp-btn-primary: #2271b1;
+      --wp-btn-primary-hover: #135e96;
+      --wp-btn-sec-bg: #f6f7f7;
+      --wp-btn-sec-text: #2271b1;
+      --wp-danger: #d63638;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--wp-bg);
+      color: var(--wp-text-main);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
+      font-size: 13px;
+    }
+
+    .wp-admin-bar {
+      height: 32px;
+      background-color: var(--wp-admin-bar);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .wp-admin-bar-logo {
+      width: 20px; height: 20px; background: #fff; border-radius: 50%;
+      display: inline-block; margin-right: 10px; opacity: 0.8;
+      text-align: center; line-height: 20px; color: var(--wp-admin-bar); font-weight: bold;
+    }
+
+    .wp-layout { display: flex; flex: 1; overflow: hidden; }
+
+    .sidebar {
+      width: 220px; background-color: var(--wp-sidebar-bg);
+      display: flex; flex-direction: column; flex-shrink: 0;
+    }
+    .sidebar-header { padding: 15px 12px; display: flex; flex-direction: column; gap: 12px; }
+    .sidebar-title { font-size: 14px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .wp-button {
+      display: inline-flex; align-items: center; justify-content: center;
+      text-decoration: none; font-size: 13px; line-height: 2.15384615;
+      min-height: 30px; margin: 0; padding: 0 10px; cursor: pointer;
+      border-width: 1px; border-style: solid; border-radius: 3px;
+      white-space: nowrap; transition: all 0.2s;
+    }
+    .wp-button-primary { background: var(--wp-btn-primary); border-color: var(--wp-btn-primary); color: #fff; }
+    .wp-button-primary:hover { background: var(--wp-btn-primary-hover); border-color: var(--wp-btn-primary-hover); color: #fff; }
+    .wp-button-secondary { background: var(--wp-btn-sec-bg); border-color: var(--wp-btn-sec-text); color: var(--wp-btn-sec-text); }
+    .wp-button-secondary:hover { background: var(--wp-bg); border-color: var(--wp-btn-primary-hover); color: var(--wp-btn-primary-hover); }
+    .wp-button-danger { color: var(--wp-danger); border-color: var(--wp-danger); background: transparent; }
+    .wp-button-danger:hover { background: var(--wp-danger); color: #fff; }
+
+    .search-container { padding: 0 12px 10px; }
+    .search-box {
+      width: 100%; background-color: #fff; border: 1px solid var(--wp-border-input);
+      padding: 3px 8px; border-radius: 3px; color: var(--wp-text-main);
+      font-size: 13px; line-height: 2; box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+    }
+    .search-box:focus { border-color: var(--wp-link); box-shadow: 0 0 0 1px var(--wp-link); outline: none; }
+
+    .topic-list { flex: 1; overflow-y: auto; list-style: none; }
+    .topic-item {
+      padding: 8px 12px; cursor: pointer; color: var(--wp-sidebar-text);
+      display: flex; flex-direction: column; gap: 2px;
+      border-left: 4px solid transparent; transition: background 0.1s;
+    }
+    .topic-item:hover { background-color: var(--wp-sidebar-hover); color: var(--wp-link); }
+    .topic-item.active { background-color: var(--wp-sidebar-current); color: var(--wp-sidebar-current-text); font-weight: 600; }
+    .topic-title { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .topic-meta { font-size: 11px; opacity: 0.7; font-weight: 400; }
+
+    .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 20px; }
+    .wp-heading-inline { font-size: 23px; font-weight: 400; margin: 0; padding: 9px 15px 4px 0; line-height: 1.3; color: #1d2327; display: inline-block; vertical-align: middle; }
+    .header-actions { display: inline-flex; gap: 6px; vertical-align: middle; margin-top: 4px; }
+    .content-header { margin-bottom: 20px; }
+    .active-meta { font-size: 13px; color: var(--wp-text-light); margin-top: 5px; }
+
+    .postbox {
+      background: var(--wp-card-bg); border: 1px solid var(--wp-border);
+      box-shadow: 0 1px 1px rgba(0,0,0,.04); border-radius: 4px; max-width: 900px;
+    }
+    .postbox-header { border-bottom: 1px solid var(--wp-border); padding: 12px 15px; font-size: 14px; font-weight: 600; }
+    .content-body { padding: 15px; line-height: 1.6; font-size: 14px; color: var(--wp-text-main); white-space: pre-wrap; word-wrap: break-word; }
+    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--wp-text-light); font-size: 16px; }
+
+    .modal-overlay {
+      position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.4);
+      display: none; align-items: center; justify-content: center; z-index: 1000;
+    }
+    .modal { background-color: #fff; box-shadow: 0 3px 6px rgba(0,0,0,0.3); width: 90%; max-width: 600px; display: flex; flex-direction: column; }
+    .modal-header { padding: 15px; background: #fcfcfc; border-bottom: 1px solid var(--wp-border); font-size: 18px; font-weight: 600; }
+    .modal-body-content { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+    .input-group { display: flex; flex-direction: column; gap: 5px; }
+    .input-group label { font-size: 14px; font-weight: 600; color: var(--wp-text-main); }
+    .wp-input-field {
+      background-color: #fff; border: 1px solid var(--wp-border-input);
+      padding: 2px 8px; border-radius: 3px; color: var(--wp-text-main);
+      font-size: 14px; line-height: 2; box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+    }
+    .wp-input-field:focus { border-color: var(--wp-link); box-shadow: 0 0 0 1px var(--wp-link); outline: none; }
+    textarea.wp-input-field { min-height: 250px; padding: 8px; line-height: 1.5; resize: vertical; }
+    .modal-footer { padding: 15px; background: #fcfcfc; border-top: 1px solid var(--wp-border); display: flex; justify-content: flex-end; gap: 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="wp-admin-bar">
+    <div class="wp-admin-bar-logo">W</div>
+    <span>My AI Knowledge Base</span>
+  </div>
+
+  <div class="wp-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">Dashboard</div>
+        <button class="wp-button wp-button-secondary" id="openModalBtn" style="justify-content: center;">
+          เพิ่มข้อมูลใหม่
+        </button>
+      </div>
+      <div class="search-container">
+        <input type="text" id="searchInput" class="search-box" placeholder="ค้นหาข้อมูล...">
+      </div>
+      <ul class="topic-list" id="topicList"></ul>
+    </aside>
+
+    <main class="main-content" id="mainContent">
+      <div id="contentView" style="display: none;">
+        <div class="content-header">
+          <h1 id="activeTitle" class="wp-heading-inline">ชื่อหัวข้อ</h1>
+          <div class="header-actions">
+            <button class="wp-button wp-button-primary" id="copyAiBtn">คัดลอกให้ AI</button>
+            <button class="wp-button wp-button-secondary" id="editBtn">แก้ไข</button>
+            <button class="wp-button wp-button-danger" id="deleteBtn">ลบ</button>
+          </div>
+          <div id="activeDate" class="active-meta">อัปเดตล่าสุด: -</div>
+        </div>
+        <div class="postbox">
+          <div class="postbox-header">เนื้อหาข้อมูล</div>
+          <div class="content-body" id="activeBody"></div>
+        </div>
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <div style="font-size: 3rem; color: #c3c4c7; margin-bottom: 10px;">📄</div>
+        <p>กำลังเชื่อมต่อข้อมูลจาก Google Sheets...</p>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header" id="modalHeaderTitle">เพิ่มหัวข้อใหม่</div>
+      <div class="modal-body-content">
+        <div class="input-group">
+          <label>ชื่อเรื่อง / หัวข้อ</label>
+          <input type="text" id="topicInput" class="wp-input-field" placeholder="ใส่ชื่อหัวข้อที่นี่">
+        </div>
+        <div class="input-group">
+          <label>เนื้อหาข้อมูล</label>
+          <textarea id="bodyInput" class="wp-input-field" placeholder="วางข้อมูล เนื้อหา หรือ Prompt ตั้งต้น..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="wp-button wp-button-secondary" id="cancelModalBtn">ยกเลิก</button>
+        <button class="wp-button wp-button-primary" id="saveTopicBtn">เผยแพร่ (Publish)</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycby8IipoKzloLsFmGL6tz0Q6ZWUn4Inm3sU23cMeM6eJkD_iChGFeWXYgldm-nkIL4_zhQ/exec';
+
+    let topics = [];
+    let selectedTopicId = null;
+    let editingTopicId = null;
+
+    const topicList = document.getElementById('topicList');
+    const searchInput = document.getElementById('searchInput');
+    const contentView = document.getElementById('contentView');
+    const emptyState = document.getElementById('emptyState');
+    const activeTitle = document.getElementById('activeTitle');
+    const activeDate = document.getElementById('activeDate');
+    const activeBody = document.getElementById('activeBody');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalHeaderTitle = document.getElementById('modalHeaderTitle');
+    const topicInput = document.getElementById('topicInput');
+    const bodyInput = document.getElementById('bodyInput');
+    const saveBtn = document.getElementById('saveTopicBtn');
+
+    async function loadData() {
+      topicList.innerHTML = '<li class="topic-item"><div class="topic-meta">⏳ กำลังเชื่อมต่อชีต...</div></li>';
+      try {
+        const response = await fetch(API_URL);
+        topics = await response.json();
+        
+        topics.reverse(); 
+        
+        if (topics.length > 0) {
+          selectedTopicId = topics[0].id;
+        } else {
+          emptyState.innerHTML = '<div style="font-size: 3rem; color: #c3c4c7; margin-bottom: 10px;">📄</div><p>ยังไม่มีข้อมูลในชีต work01 คลิก "เพิ่มข้อมูลใหม่" ด้านซ้าย</p>';
+        }
+        
+        renderList();
+        renderContent();
+      } catch (error) {
+        topicList.innerHTML = '<li class="topic-item"><div class="topic-title" style="color: red;">❌ โหลดข้อมูลล้มเหลว</div></li>';
+        emptyState.innerHTML = '<div style="font-size: 3rem; color: #d63638; margin-bottom: 10px;">❌</div><p>เชื่อมต่อ Google Sheets ไม่สำเร็จ ตรวจสอบสิทธิ์การเข้าถึง Web App</p>';
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    function saveToStorage() {
+      fetch(API_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({ action: 'SAVE', topics: [...topics].reverse() })
+      }).catch(err => console.error('Save failed:', err));
+    }
+
+    function renderList(filter = '') {
+      topicList.innerHTML = '';
+      const filtered = topics.filter(t => t.title.toLowerCase().includes(filter.toLowerCase()));
+
+      filtered.forEach(item => {
+        const li = document.createElement('li');
+        li.className = `topic-item ${item.id === selectedTopicId ? 'active' : ''}`;
+        li.innerHTML = `
+          <div class="topic-title">${item.title}</div>
+          <div class="topic-meta">${item.updatedAt}</div>
+        `;
+        li.addEventListener('click', () => {
+          selectedTopicId = item.id;
+          renderList(searchInput.value);
+          renderContent();
+        });
+        topicList.appendChild(li);
+      });
+    }
+
+    function renderContent() {
+      const activeItem = topics.find(t => t.id === selectedTopicId);
+      if (!activeItem) {
+        contentView.style.display = 'none';
+        emptyState.style.display = 'flex';
+        return;
+      }
+
+      contentView.style.display = 'block';
+      emptyState.style.display = 'none';
+      activeTitle.textContent = activeItem.title;
+      activeDate.textContent = `อัปเดตล่าสุด: ${activeItem.updatedAt}`;
+      activeBody.textContent = activeItem.body;
+    }
+
+    document.getElementById('openModalBtn').addEventListener('click', () => {
+      editingTopicId = null;
+      modalHeaderTitle.textContent = 'เพิ่มหัวข้อใหม่';
+      topicInput.value = '';
+      bodyInput.value = '';
+      modalOverlay.style.display = 'flex';
+      topicInput.focus();
+    });
+
+    document.getElementById('cancelModalBtn').addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+    });
+
+    saveBtn.addEventListener('click', () => {
+      const title = topicInput.value.trim();
+      const body = bodyInput.value.trim();
+
+      if (!title) {
+        alert('กรุณากรอกชื่อหัวข้อ');
+        return;
+      }
+
+      saveBtn.textContent = 'กำลังบันทึก...';
+      const now = new Date().toLocaleDateString('th-TH');
+
+      if (editingTopicId) {
+        const idx = topics.findIndex(t => t.id === editingTopicId);
+        if (idx !== -1) {
+          topics[idx].title = title;
+          topics[idx].body = body;
+          topics[idx].updatedAt = now;
+        }
+      } else {
+        const newTopic = { id: Date.now().toString(), title, body, updatedAt: now };
+        topics.unshift(newTopic);
+        selectedTopicId = newTopic.id;
+      }
+
+      renderList(searchInput.value);
+      renderContent();
+      saveToStorage(); 
+      
+      modalOverlay.style.display = 'none';
+      saveBtn.textContent = 'เผยแพร่ (Publish)';
+    });
+
+    document.getElementById('editBtn').addEventListener('click', () => {
+      const activeItem = topics.find(t => t.id === selectedTopicId);
+      if (!activeItem) return;
+
+      editingTopicId = activeItem.id;
+      modalHeaderTitle.textContent = 'แก้ไขหัวข้อ';
+      topicInput.value = activeItem.title;
+      bodyInput.value = activeItem.body;
+      modalOverlay.style.display = 'flex';
+    });
+
+    document.getElementById('deleteBtn').addEventListener('click', () => {
+      if (confirm('คุณแน่ใจหรือไม่ที่จะลบหัวข้อนี้?')) {
+        topics = topics.filter(t => t.id !== selectedTopicId);
+        selectedTopicId = topics.length > 0 ? topics[0].id : null;
+        renderList(searchInput.value);
+        renderContent();
+        
+        if (topics.length === 0) {
+          emptyState.innerHTML = '<div style="font-size: 3rem; color: #c3c4c7; margin-bottom: 10px;">📄</div><p>ยังไม่มีข้อมูลในชีต work01 คลิก "เพิ่มข้อมูลใหม่" ด้านซ้าย</p>';
+        }
+        
+        saveToStorage();
+      }
+    });
+
+    document.getElementById('copyAiBtn').addEventListener('click', () => {
+      const activeItem = topics.find(t => t.id === selectedTopicId);
+      if (!activeItem) return;
+      navigator.clipboard.writeText(`[หัวข้อ: ${activeItem.title}]\n\n${activeItem.body}`).then(() => {
+        const btn = document.getElementById('copyAiBtn');
+        const originalText = btn.textContent;
+        btn.textContent = 'คัดลอกแล้ว!';
+        setTimeout(() => { btn.textContent = originalText; }, 1500);
+      });
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      renderList(e.target.value);
+    });
+
+    loadData();
+  </script>
+</body>
+</html>
