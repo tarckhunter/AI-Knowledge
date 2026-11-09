@@ -2,208 +2,395 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Knowledge Base Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AI Knowledge Base - GPT Style</title>
   <style>
+    /* ChatGPT Inspired Color Palette */
     :root {
-      --wp-admin-bar: #1d2327;
-      --wp-sidebar-bg: #1d2327;
-      --wp-sidebar-text: #c3c4c7;
-      --wp-sidebar-hover: #2c3338;
-      --wp-sidebar-current: #2271b1;
-      --wp-sidebar-current-text: #fff;
-      --wp-bg: #f0f0f1;
-      --wp-text-main: #3c434a;
-      --wp-text-light: #50575e;
-      --wp-link: #2271b1;
-      --wp-link-hover: #135e96;
-      --wp-border: #c3c4c7;
-      --wp-border-input: #8c8f94;
-      --wp-card-bg: #ffffff;
-      
-      --wp-btn-primary: #2271b1;
-      --wp-btn-primary-hover: #135e96;
-      --wp-btn-sec-bg: #f6f7f7;
-      --wp-btn-sec-text: #2271b1;
-      --wp-danger: #d63638;
+      --bg-sidebar: #171717;
+      --bg-main: #212121;
+      --bg-hover: #2f2f2f;
+      --bg-active: #2f2f2f;
+      --text-primary: #ececec;
+      --text-secondary: #b4b4b4;
+      --border-color: #424242;
+      --brand: #10a37f; /* สีเขียวแบบ ChatGPT */
+      --brand-hover: #1a7f64;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--wp-bg);
-      color: var(--wp-text-main);
+      background-color: var(--bg-main);
+      color: var(--text-primary);
       display: flex;
-      flex-direction: column;
       height: 100vh;
+      height: 100dvh;
       overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
-      font-size: 13px;
+      font-family: Söhne, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
-    .wp-admin-bar {
-      height: 32px;
-      background-color: var(--wp-admin-bar);
-      color: #fff;
+    /* Scrollbar ปรับให้เข้ากับ Dark Mode */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background-color: #424242; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background-color: #565656; }
+
+    .app-layout { 
+      display: flex; 
+      flex: 1; 
+      overflow: hidden; 
+      position: relative;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px; 
+      background-color: var(--bg-sidebar);
+      display: flex; 
+      flex-direction: column; 
+      flex-shrink: 0;
+      padding: 10px;
+      gap: 10px;
+    }
+
+    /* ปุ่ม New Topic แบบ ChatGPT */
+    .btn-new-chat {
       display: flex;
       align-items: center;
-      padding: 0 10px;
-      font-size: 13px;
-      flex-shrink: 0;
+      gap: 8px;
+      background-color: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      width: 100%;
     }
-    .wp-admin-bar-logo {
-      width: 20px; height: 20px; background: #fff; border-radius: 50%;
-      display: inline-block; margin-right: 10px; opacity: 0.8;
-      text-align: center; line-height: 20px; color: var(--wp-admin-bar); font-weight: bold;
+    .btn-new-chat:hover {
+      background-color: var(--bg-hover);
+    }
+    .icon-plus {
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1;
     }
 
-    .wp-layout { display: flex; flex: 1; overflow: hidden; }
-
-    .sidebar {
-      width: 220px; background-color: var(--wp-sidebar-bg);
-      display: flex; flex-direction: column; flex-shrink: 0;
-    }
-    .sidebar-header { padding: 15px 12px; display: flex; flex-direction: column; gap: 12px; }
-    .sidebar-title { font-size: 14px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    .wp-button {
-      display: inline-flex; align-items: center; justify-content: center;
-      text-decoration: none; font-size: 13px; line-height: 2.15384615;
-      min-height: 30px; margin: 0; padding: 0 10px; cursor: pointer;
-      border-width: 1px; border-style: solid; border-radius: 3px;
-      white-space: nowrap; transition: all 0.2s;
-    }
-    .wp-button-primary { background: var(--wp-btn-primary); border-color: var(--wp-btn-primary); color: #fff; }
-    .wp-button-primary:hover { background: var(--wp-btn-primary-hover); border-color: var(--wp-btn-primary-hover); color: #fff; }
-    .wp-button-secondary { background: var(--wp-btn-sec-bg); border-color: var(--wp-btn-sec-text); color: var(--wp-btn-sec-text); }
-    .wp-button-secondary:hover { background: var(--wp-bg); border-color: var(--wp-btn-primary-hover); color: var(--wp-btn-primary-hover); }
-    .wp-button-danger { color: var(--wp-danger); border-color: var(--wp-danger); background: transparent; }
-    .wp-button-danger:hover { background: var(--wp-danger); color: #fff; }
-
-    .search-container { padding: 0 12px 10px; }
+    /* Search Box */
     .search-box {
-      width: 100%; background-color: #fff; border: 1px solid var(--wp-border-input);
-      padding: 3px 8px; border-radius: 3px; color: var(--wp-text-main);
-      font-size: 13px; line-height: 2; box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+      width: 100%; 
+      background-color: transparent; 
+      border: 1px solid var(--border-color);
+      padding: 10px 12px; 
+      border-radius: 8px; 
+      color: var(--text-primary);
+      font-size: 14px; 
+      outline: none;
+      transition: border-color 0.2s;
     }
-    .search-box:focus { border-color: var(--wp-link); box-shadow: 0 0 0 1px var(--wp-link); outline: none; }
+    .search-box:focus { border-color: var(--text-secondary); }
+    .search-box::placeholder { color: #666; }
 
-    .topic-list { flex: 1; overflow-y: auto; list-style: none; }
+    /* Topic List */
+    .topic-list { flex: 1; overflow-y: auto; list-style: none; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; gap: 4px; }
     .topic-item {
-      padding: 8px 12px; cursor: pointer; color: var(--wp-sidebar-text);
-      display: flex; flex-direction: column; gap: 2px;
-      border-left: 4px solid transparent; transition: background 0.1s;
+      padding: 10px 12px; 
+      cursor: pointer; 
+      color: var(--text-primary);
+      display: flex; 
+      flex-direction: column; 
+      gap: 4px;
+      border-radius: 8px; 
+      transition: background 0.1s;
     }
-    .topic-item:hover { background-color: var(--wp-sidebar-hover); color: var(--wp-link); }
-    .topic-item.active { background-color: var(--wp-sidebar-current); color: var(--wp-sidebar-current-text); font-weight: 600; }
-    .topic-title { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .topic-meta { font-size: 11px; opacity: 0.7; font-weight: 400; }
+    .topic-item:hover { background-color: var(--bg-hover); }
+    .topic-item.active { background-color: var(--bg-active); }
+    .topic-title { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;}
+    .topic-meta { font-size: 12px; color: var(--text-secondary); }
 
-    .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 20px; }
-    .wp-heading-inline { font-size: 23px; font-weight: 400; margin: 0; padding: 9px 15px 4px 0; line-height: 1.3; color: #1d2327; display: inline-block; vertical-align: middle; }
-    .header-actions { display: inline-flex; gap: 6px; vertical-align: middle; margin-top: 4px; }
-    .content-header { margin-bottom: 20px; }
-    .active-meta { font-size: 13px; color: var(--wp-text-light); margin-top: 5px; }
-
-    .postbox {
-      background: var(--wp-card-bg); border: 1px solid var(--wp-border);
-      box-shadow: 0 1px 1px rgba(0,0,0,.04); border-radius: 4px; max-width: 900px;
+    /* Main Content Area */
+    .main-content { 
+      flex: 1; 
+      display: flex; 
+      flex-direction: column; 
+      overflow-y: auto; 
+      padding: 40px 20px; 
+      -webkit-overflow-scrolling: touch;
+      align-items: center; /* จัดให้อยู่ตรงกลางแบบแชท */
     }
-    .postbox-header { border-bottom: 1px solid var(--wp-border); padding: 12px 15px; font-size: 14px; font-weight: 600; }
-    .content-body { padding: 15px; line-height: 1.6; font-size: 14px; color: var(--wp-text-main); white-space: pre-wrap; word-wrap: break-word; }
-    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--wp-text-light); font-size: 16px; }
+    .content-wrapper {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
+    .content-header {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 20px;
+    }
+
+    .header-title { 
+      font-size: 28px; 
+      font-weight: 600; 
+      color: var(--text-primary);
+      line-height: 1.3;
+      word-break: break-word;
+    }
+    
+    .header-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .active-date { font-size: 13px; color: var(--text-secondary); }
+
+    /* Action Buttons */
+    .action-group {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-action:hover { background-color: #3f3f3f; }
+    .btn-action.primary { background-color: var(--brand); color: #fff; }
+    .btn-action.primary:hover { background-color: var(--brand-hover); }
+    .btn-action.danger:hover { background-color: var(--danger); color: #fff; }
+
+    .content-body { 
+      line-height: 1.7; 
+      font-size: 16px; 
+      color: #d1d5db; 
+      white-space: pre-wrap; 
+      word-break: break-word; 
+    }
+
+    .empty-state { 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      height: 100%; 
+      color: var(--text-secondary); 
+      font-size: 16px; 
+      text-align: center;
+      padding: 20px;
+    }
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    /* Mobile Back Button */
+    .btn-back-list {
+      display: none;
+      align-self: flex-start;
+      margin-bottom: 10px;
+      background: transparent;
+      color: var(--text-secondary);
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 8px 0;
+    }
+    .btn-back-list:hover { color: var(--text-primary); }
+
+    /* Modal - Style แบบหรูหรา */
     .modal-overlay {
-      position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.4);
-      display: none; align-items: center; justify-content: center; z-index: 1000;
+      position: fixed; 
+      inset: 0; 
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px); /* พื้นหลังเบลอ */
+      display: none; 
+      align-items: center; 
+      justify-content: center; 
+      z-index: 1000;
+      padding: 16px;
     }
-    .modal { background-color: #fff; box-shadow: 0 3px 6px rgba(0,0,0,0.3); width: 90%; max-width: 600px; display: flex; flex-direction: column; }
-    .modal-header { padding: 15px; background: #fcfcfc; border-bottom: 1px solid var(--wp-border); font-size: 18px; font-weight: 600; }
-    .modal-body-content { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-    .input-group { display: flex; flex-direction: column; gap: 5px; }
-    .input-group label { font-size: 14px; font-weight: 600; color: var(--wp-text-main); }
-    .wp-input-field {
-      background-color: #fff; border: 1px solid var(--wp-border-input);
-      padding: 2px 8px; border-radius: 3px; color: var(--wp-text-main);
-      font-size: 14px; line-height: 2; box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+    .modal { 
+      background-color: var(--bg-main); 
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+      width: 100%; 
+      max-width: 650px; 
+      max-height: 90vh;
+      display: flex; 
+      flex-direction: column; 
+      border-radius: 12px;
+      overflow: hidden;
     }
-    .wp-input-field:focus { border-color: var(--wp-link); box-shadow: 0 0 0 1px var(--wp-link); outline: none; }
-    textarea.wp-input-field { min-height: 250px; padding: 8px; line-height: 1.5; resize: vertical; }
-    .modal-footer { padding: 15px; background: #fcfcfc; border-top: 1px solid var(--wp-border); display: flex; justify-content: flex-end; gap: 10px; }
+    .modal-header { 
+      padding: 20px; 
+      border-bottom: 1px solid var(--border-color); 
+      font-size: 18px; 
+      font-weight: 600; 
+    }
+    .modal-body-content { 
+      padding: 20px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 16px; 
+      overflow-y: auto; 
+    }
+    .input-group { display: flex; flex-direction: column; gap: 8px; }
+    .input-group label { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+    
+    .gpt-input-field {
+      background-color: var(--bg-sidebar); 
+      border: 1px solid var(--border-color);
+      padding: 12px 14px; 
+      border-radius: 8px; 
+      color: var(--text-primary);
+      font-size: 15px; 
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .gpt-input-field:focus { border-color: var(--brand); }
+    textarea.gpt-input-field { min-height: 250px; line-height: 1.6; resize: vertical; }
+    
+    .modal-footer { 
+      padding: 16px 20px; 
+      border-top: 1px solid var(--border-color); 
+      display: flex; 
+      justify-content: flex-end; 
+      gap: 12px; 
+      background-color: var(--bg-sidebar);
+    }
+
+    /* ========================================= */
+    /* Mobile Responsive Settings (Screen < 768px) */
+    /* ========================================= */
+    @media (max-width: 768px) {
+      .sidebar { width: 100%; height: 100%; }
+      .main-content { padding: 20px 16px; }
+
+      .app-layout.view-list .sidebar { display: flex; }
+      .app-layout.view-list .main-content { display: none; }
+
+      .app-layout.view-detail .sidebar { display: none; }
+      .app-layout.view-detail .main-content { display: flex; }
+
+      .btn-back-list { display: flex; align-items: center; gap: 5px; }
+
+      .header-title { font-size: 22px; }
+      
+      .header-meta { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .action-group { width: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+      .btn-action { justify-content: center; }
+
+      textarea.gpt-input-field { min-height: 180px; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="wp-admin-bar">
-    <div class="wp-admin-bar-logo">W</div>
-    <span>My AI Knowledge Base</span>
-  </div>
-
-  <div class="wp-layout">
+  <div class="app-layout view-list" id="appLayout">
+    <!-- Sidebar / Master View -->
     <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-title">Dashboard</div>
-        <button class="wp-button wp-button-secondary" id="openModalBtn" style="justify-content: center;">
-          เพิ่มข้อมูลใหม่
-        </button>
-      </div>
-      <div class="search-container">
-        <input type="text" id="searchInput" class="search-box" placeholder="ค้นหาข้อมูล...">
-      </div>
-      <ul class="topic-list" id="topicList"></ul>
+      <button class="btn-new-chat" id="openModalBtn">
+        <span class="icon-plus">＋</span> New Topic
+      </button>
+      
+      <input type="text" id="searchInput" class="search-box" placeholder="ค้นหาข้อมูล...">
+      
+      <ul class="topic-list" id="topicList">
+        <!-- List items go here -->
+      </ul>
     </aside>
 
+    <!-- Main Content / Detail View -->
     <main class="main-content" id="mainContent">
-      <div id="contentView" style="display: none;">
+      
+      <div id="contentView" class="content-wrapper" style="display: none;">
+        <!-- Mobile Back Button -->
+        <button class="btn-back-list" id="backToListBtn">
+          ← Back to list
+        </button>
+
         <div class="content-header">
-          <h1 id="activeTitle" class="wp-heading-inline">ชื่อหัวข้อ</h1>
-          <div class="header-actions">
-            <button class="wp-button wp-button-primary" id="copyAiBtn">คัดลอกให้ AI</button>
-            <button class="wp-button wp-button-secondary" id="editBtn">แก้ไข</button>
-            <button class="wp-button wp-button-danger" id="deleteBtn">ลบ</button>
+          <h1 id="activeTitle" class="header-title">ชื่อหัวข้อ</h1>
+          <div class="header-meta">
+            <span id="activeDate" class="active-date">อัปเดตล่าสุด: -</span>
+            <div class="action-group">
+              <button class="btn-action primary" id="copyAiBtn">
+                <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="14" width="14"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy
+              </button>
+              <button class="btn-action" id="editBtn">Edit</button>
+              <button class="btn-action danger" id="deleteBtn">Delete</button>
+            </div>
           </div>
-          <div id="activeDate" class="active-meta">อัปเดตล่าสุด: -</div>
         </div>
-        <div class="postbox">
-          <div class="postbox-header">เนื้อหาข้อมูล</div>
-          <div class="content-body" id="activeBody"></div>
-        </div>
+
+        <div class="content-body" id="activeBody"></div>
       </div>
 
       <div class="empty-state" id="emptyState">
-        <div style="font-size: 3rem; color: #c3c4c7; margin-bottom: 10px;">📄</div>
-        <p>กำลังเชื่อมต่อข้อมูลจาก Google Sheets...</p>
+        <div class="empty-icon">🤖</div>
+        <h3 style="color: var(--text-primary); margin-bottom: 8px; font-weight: 500;">AI Knowledge Base</h3>
+        <p>กำลังเชื่อมต่อข้อมูลจากระบบ...</p>
       </div>
     </main>
   </div>
 
+  <!-- Modal for Creating/Editing -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
-      <div class="modal-header" id="modalHeaderTitle">เพิ่มหัวข้อใหม่</div>
+      <div class="modal-header" id="modalHeaderTitle">Add New Topic</div>
       <div class="modal-body-content">
         <div class="input-group">
-          <label>ชื่อเรื่อง / หัวข้อ</label>
-          <input type="text" id="topicInput" class="wp-input-field" placeholder="ใส่ชื่อหัวข้อที่นี่">
+          <label>Topic Title</label>
+          <input type="text" id="topicInput" class="gpt-input-field" placeholder="ตั้งชื่อหัวข้อที่นี่...">
         </div>
         <div class="input-group">
-          <label>เนื้อหาข้อมูล</label>
-          <textarea id="bodyInput" class="wp-input-field" placeholder="วางข้อมูล เนื้อหา หรือ Prompt ตั้งต้น..."></textarea>
+          <label>Content / Prompt</label>
+          <textarea id="bodyInput" class="gpt-input-field" placeholder="ใส่เนื้อหาข้อมูล หรือ โครงสร้างคำสั่ง (Prompt) ที่ต้องการให้ AI เรียนรู้..."></textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="wp-button wp-button-secondary" id="cancelModalBtn">ยกเลิก</button>
-        <button class="wp-button wp-button-primary" id="saveTopicBtn">เผยแพร่ (Publish)</button>
+        <button class="btn-action" id="cancelModalBtn" style="background: transparent; border: 1px solid var(--border-color);">Cancel</button>
+        <button class="btn-action primary" id="saveTopicBtn">Save to Knowledge</button>
       </div>
     </div>
   </div>
 
   <script>
+    // ==========================================
+    // ⚠️ นำ URL ของ Web App มาวางที่นี่
+    // ==========================================
     const API_URL = 'https://script.google.com/macros/s/AKfycby8IipoKzloLsFmGL6tz0Q6ZWUn4Inm3sU23cMeM6eJkD_iChGFeWXYgldm-nkIL4_zhQ/exec';
 
     let topics = [];
     let selectedTopicId = null;
     let editingTopicId = null;
 
+    const appLayout = document.getElementById('appLayout');
     const topicList = document.getElementById('topicList');
     const searchInput = document.getElementById('searchInput');
     const contentView = document.getElementById('contentView');
@@ -216,27 +403,40 @@
     const topicInput = document.getElementById('topicInput');
     const bodyInput = document.getElementById('bodyInput');
     const saveBtn = document.getElementById('saveTopicBtn');
+    const backToListBtn = document.getElementById('backToListBtn');
+
+    function switchMobileView(view) {
+      if (view === 'detail') {
+        appLayout.classList.remove('view-list');
+        appLayout.classList.add('view-detail');
+      } else {
+        appLayout.classList.remove('view-detail');
+        appLayout.classList.add('view-list');
+      }
+    }
+
+    backToListBtn.addEventListener('click', () => switchMobileView('list'));
 
     async function loadData() {
-      topicList.innerHTML = '<li class="topic-item"><div class="topic-meta">⏳ กำลังเชื่อมต่อชีต...</div></li>';
+      topicList.innerHTML = '<li class="topic-item"><div class="topic-meta">⏳ Loading data...</div></li>';
       try {
         const response = await fetch(API_URL);
         topics = await response.json();
-        
         topics.reverse(); 
         
         if (topics.length > 0) {
           selectedTopicId = topics[0].id;
         } else {
-          emptyState.innerHTML = '<div style="font-size: 3rem; color: #c3c4c7; margin-bottom: 10px;">📄</div><p>ยังไม่มีข้อมูลในชีต work01 คลิก "เพิ่มข้อมูลใหม่" ด้านซ้าย</p>';
+          emptyState.innerHTML = '<div class="empty-icon">✨</div><h3 style="color: var(--text-primary); margin-bottom: 8px; font-weight: 500;">พร้อมใช้งานแล้ว</h3><p>คลิก "New Topic" ด้านซ้ายเพื่อเริ่มสร้างคลังข้อมูลของคุณ</p>';
         }
         
         renderList();
         renderContent();
+
+        if (window.innerWidth <= 768) switchMobileView('list');
       } catch (error) {
-        topicList.innerHTML = '<li class="topic-item"><div class="topic-title" style="color: red;">❌ โหลดข้อมูลล้มเหลว</div></li>';
-        emptyState.innerHTML = '<div style="font-size: 3rem; color: #d63638; margin-bottom: 10px;">❌</div><p>เชื่อมต่อ Google Sheets ไม่สำเร็จ ตรวจสอบสิทธิ์การเข้าถึง Web App</p>';
-        console.error('Error fetching data:', error);
+        topicList.innerHTML = '<li class="topic-item"><div class="topic-title" style="color: var(--danger);">❌ Connection Failed</div></li>';
+        emptyState.innerHTML = '<div class="empty-icon">⚠️</div><h3 style="color: var(--text-primary); margin-bottom: 8px;">ไม่สามารถเชื่อมต่อฐานข้อมูลได้</h3><p>ตรวจสอบ URL ของ Google Apps Script</p>';
       }
     }
 
@@ -263,6 +463,7 @@
           selectedTopicId = item.id;
           renderList(searchInput.value);
           renderContent();
+          if (window.innerWidth <= 768) switchMobileView('detail');
         });
         topicList.appendChild(li);
       });
@@ -276,16 +477,16 @@
         return;
       }
 
-      contentView.style.display = 'block';
+      contentView.style.display = 'flex';
       emptyState.style.display = 'none';
       activeTitle.textContent = activeItem.title;
-      activeDate.textContent = `อัปเดตล่าสุด: ${activeItem.updatedAt}`;
+      activeDate.textContent = `Updated: ${activeItem.updatedAt}`;
       activeBody.textContent = activeItem.body;
     }
 
     document.getElementById('openModalBtn').addEventListener('click', () => {
       editingTopicId = null;
-      modalHeaderTitle.textContent = 'เพิ่มหัวข้อใหม่';
+      modalHeaderTitle.textContent = 'Add New Topic';
       topicInput.value = '';
       bodyInput.value = '';
       modalOverlay.style.display = 'flex';
@@ -301,11 +502,11 @@
       const body = bodyInput.value.trim();
 
       if (!title) {
-        alert('กรุณากรอกชื่อหัวข้อ');
+        alert('Please enter a topic title.');
         return;
       }
 
-      saveBtn.textContent = 'กำลังบันทึก...';
+      saveBtn.textContent = 'Saving...';
       const now = new Date().toLocaleDateString('th-TH');
 
       if (editingTopicId) {
@@ -326,7 +527,9 @@
       saveToStorage(); 
       
       modalOverlay.style.display = 'none';
-      saveBtn.textContent = 'เผยแพร่ (Publish)';
+      saveBtn.textContent = 'Save to Knowledge';
+
+      if (window.innerWidth <= 768) switchMobileView('detail');
     });
 
     document.getElementById('editBtn').addEventListener('click', () => {
@@ -334,24 +537,25 @@
       if (!activeItem) return;
 
       editingTopicId = activeItem.id;
-      modalHeaderTitle.textContent = 'แก้ไขหัวข้อ';
+      modalHeaderTitle.textContent = 'Edit Topic';
       topicInput.value = activeItem.title;
       bodyInput.value = activeItem.body;
       modalOverlay.style.display = 'flex';
     });
 
     document.getElementById('deleteBtn').addEventListener('click', () => {
-      if (confirm('คุณแน่ใจหรือไม่ที่จะลบหัวข้อนี้?')) {
+      if (confirm('Are you sure you want to delete this topic?')) {
         topics = topics.filter(t => t.id !== selectedTopicId);
         selectedTopicId = topics.length > 0 ? topics[0].id : null;
         renderList(searchInput.value);
         renderContent();
         
         if (topics.length === 0) {
-          emptyState.innerHTML = '<div style="font-size: 3rem; color: #c3c4c7; margin-bottom: 10px;">📄</div><p>ยังไม่มีข้อมูลในชีต work01 คลิก "เพิ่มข้อมูลใหม่" ด้านซ้าย</p>';
+          emptyState.innerHTML = '<div class="empty-icon">✨</div><h3 style="color: var(--text-primary); margin-bottom: 8px; font-weight: 500;">พร้อมใช้งานแล้ว</h3><p>คลิก "New Topic" ด้านซ้ายเพื่อเริ่มสร้างคลังข้อมูลของคุณ</p>';
         }
-        
         saveToStorage();
+
+        if (window.innerWidth <= 768) switchMobileView('list');
       }
     });
 
@@ -360,15 +564,13 @@
       if (!activeItem) return;
       navigator.clipboard.writeText(`[หัวข้อ: ${activeItem.title}]\n\n${activeItem.body}`).then(() => {
         const btn = document.getElementById('copyAiBtn');
-        const originalText = btn.textContent;
-        btn.textContent = 'คัดลอกแล้ว!';
-        setTimeout(() => { btn.textContent = originalText; }, 1500);
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        setTimeout(() => { btn.innerHTML = originalHtml; }, 1500);
       });
     });
 
-    searchInput.addEventListener('input', (e) => {
-      renderList(e.target.value);
-    });
+    searchInput.addEventListener('input', (e) => renderList(e.target.value));
 
     loadData();
   </script>
