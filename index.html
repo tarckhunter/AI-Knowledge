@@ -88,7 +88,7 @@
     .search-box:focus { border-color: var(--text-secondary); }
     .search-box::placeholder { color: #666; }
 
-    /* Topic List - เหลือเฉพาะ Title */
+    /* Topic List */
     .topic-list { 
       flex: 1; 
       overflow-y: auto; 
@@ -354,7 +354,7 @@
   </div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycby8IipoKzloLsFmGL6tz0Q6ZWUn4Inm3sU23cMeM6eJkD_iChGFeWXYgldm-nkIL4_zhQ/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxtCTb-zrCzai7Trv2IJrPv-eyDVry6xjtaqadsXR6PuEzteZcf6NZPJUZErTbFirnZdA/exec';
 
     let topics = [];
     let selectedTopicId = null;
@@ -375,10 +375,16 @@
     const saveBtn = document.getElementById('saveTopicBtn');
     const backToListBtn = document.getElementById('backToListBtn');
 
-    // ฟังก์ชันจัดรูปแบบวันที่ให้อ่านง่าย ไม่ติดรหัสเวลา GMT ยาวๆ
     function formatDisplayDate(dateStr) {
       if (!dateStr) return '-';
-      const d = new Date(dateStr);
+      const cleanStr = String(dateStr).trim();
+      
+      // ถ้าพิมพ์มาในรูปแบบ วัน/เดือน/ปี อยู่แล้ว ให้แสดงตามที่พิมพ์ได้ทันที
+      if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(cleanStr)) {
+        return cleanStr;
+      }
+
+      const d = new Date(cleanStr);
       if (!isNaN(d.getTime())) {
         return d.toLocaleDateString('th-TH', {
           year: 'numeric',
@@ -386,7 +392,7 @@
           day: 'numeric'
         });
       }
-      return dateStr.replace(/ 00:00:00.*$/, '').trim();
+      return cleanStr.replace(/ 00:00:00.*$/, '').trim();
     }
 
     function switchMobileView(view) {
@@ -432,15 +438,14 @@
       }).catch(err => console.error('Save failed:', err));
     }
 
-    // เรนเดอร์เฉพาะ Topic Title ฝั่งซ้าย
     function renderList(filter = '') {
       topicList.innerHTML = '';
-      const filtered = topics.filter(t => (t.title || '').toLowerCase().includes(filter.toLowerCase()));
+      const filtered = topics.filter(t => String(t.title || '').toLowerCase().includes(filter.toLowerCase()));
 
       filtered.forEach(item => {
         const li = document.createElement('li');
         li.className = `topic-item ${item.id === selectedTopicId ? 'active' : ''}`;
-        li.innerHTML = `<div class="topic-title">${item.title || 'Untitled Topic'}</div>`;
+        li.innerHTML = `<div class="topic-title">${String(item.title || 'Untitled Topic')}</div>`;
         li.addEventListener('click', () => {
           selectedTopicId = item.id;
           renderList(searchInput.value);
@@ -451,7 +456,6 @@
       });
     }
 
-    // เรนเดอร์ฝั่งขวา (Topic Title + วันที่อัปเดตแบบฟอร์แมตสั้น)
     function renderContent() {
       const activeItem = topics.find(t => t.id === selectedTopicId);
       if (!activeItem) {
@@ -462,9 +466,9 @@
 
       contentView.style.display = 'flex';
       emptyState.style.display = 'none';
-      activeTitle.textContent = activeItem.title;
+      activeTitle.textContent = String(activeItem.title || '');
       activeDate.textContent = `Updated: ${formatDisplayDate(activeItem.updatedAt)}`;
-      activeBody.textContent = activeItem.body;
+      activeBody.textContent = String(activeItem.body || '');
     }
 
     document.getElementById('openModalBtn').addEventListener('click', () => {
